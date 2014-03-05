@@ -99,12 +99,29 @@ void PrintAllClassesAndMethods(void);
 			   "<string_method_prints> is an optional string printed by the method when it is called\n");
 		return;
 	}
+	
+	NSString *methodName = arguments[0];
+	NSString *className = arguments[1];
+	NSString *stringToPrint = [arguments count] > 2 ? arguments[2] : @"";
+	
+	Class class = objc_getClass([className UTF8String]);
+	if (!class) {
+		printf("Class %s doesn't exist. Create it with the subclass command first.\n", [className UTF8String]);
+		return;
+	}
+	
+	if ([class instancesRespondToSelector:NSSelectorFromString(methodName)]) return; // Already done
+	
+	IMP implementation = imp_implementationWithBlock(^(id _self){
+		printf("+[%s<%p> %s] %s\n", class_getName([_self class]), _self, [methodName UTF8String], [stringToPrint UTF8String]);
+	});
+	class_addMethod(object_getClass(class), NSSelectorFromString(methodName), implementation, "v@:");
 }
 
 - (void)performCallCommand:(NSArray *)arguments
 {
 	if ([arguments count] < 2) {
-		printf("call <method_name> <class> - Calls method named <method_name> on <class>. If it's an instnace method, a new instance of <class>"\
+		printf("call <method_name> <class> - Calls method named <method_name> on <class>. A new instance of <class>"\
 			   "is created if necessary.\n");
 		return;
 	}
@@ -127,6 +144,28 @@ void PrintAllClassesAndMethods(void);
 		self.classInstances[className] = instance;
 	}
 	[instance performSelector:NSSelectorFromString(methodName)];
+}
+
+- (void)performCallcCommand:(NSArray *)arguments
+{
+	if ([arguments count] < 2) {
+		printf("callc <method_name> <class> - Calls class method named <method_name> on <class>.\n");
+		return;
+	}
+	
+	NSString *methodName = arguments[0];
+	NSString *className = arguments[1];
+	Class class = objc_getClass([className UTF8String]);
+	if (!class) {
+		printf("Class %s doesn't exist. Create it with the subclass command first.\n", [className UTF8String]);
+		return;
+	}
+	if (![class respondsToSelector:NSSelectorFromString(methodName)]) {
+		printf("%s doesn't implement %s. Add it using the addc command first.\n", [className UTF8String], [methodName UTF8String]);
+		return;
+	}
+	
+	[class performSelector:NSSelectorFromString(methodName)];
 }
 
 - (void)performSubclassCommand:(NSArray *)arguments
