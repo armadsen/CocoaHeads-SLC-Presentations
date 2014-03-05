@@ -118,6 +118,38 @@ void PrintAllClassesAndMethods(void);
 	class_addMethod(object_getClass(class), NSSelectorFromString(methodName), implementation, "v@:");
 }
 
+- (void)performSwizzleCommand:(NSArray *)arguments
+{
+	if ([arguments count] < 3) {
+		printf("swizzle <method_name1> <method_name2> <class> - Exchanges two instance methods' implementations on class. "\
+			   "Both methods must already exist.");
+		return;
+	}
+	
+	NSString *method1Name = arguments[0];
+	NSString *method2Name = arguments[1];
+	NSString *className = arguments[2];
+
+	Class class = objc_getClass([className UTF8String]);
+	if (!class) {
+		printf("Class %s doesn't exist. Create it with the subclass command first.\n", [className UTF8String]);
+		return;
+	}
+	
+	Method method1 = class_getInstanceMethod(class, NSSelectorFromString(method1Name));
+	if (!method1) {
+		printf("%s doesn't implement %s. Add it using the add command first.\n", [className UTF8String], [method1Name UTF8String]);
+		return;
+	}
+	Method method2 = class_getInstanceMethod(class, NSSelectorFromString(method2Name));
+	if (!method2) {
+		printf("%s doesn't implement %s. Add it using the add command first.\n", [className UTF8String], [method2Name UTF8String]);
+		return;
+	}
+	
+	method_exchangeImplementations(method1, method2);
+}
+
 - (void)performCallCommand:(NSArray *)arguments
 {
 	if ([arguments count] < 2) {
@@ -225,7 +257,17 @@ void PrintAllClassesAndMethods(void);
 		printf("list [<class>] - Prints metadata information about class. If class is not specified, all current classes are listed.\n");
 		return;
 	}
-	PrintAllClassesAndMethods();
+	if ([arguments count]) {
+		NSString *className = arguments[0];
+		Class class = NSClassFromString(className);
+		if (!class) {
+			printf("class %s doesn't exist", [className UTF8String]);
+			return;
+		}
+		PrintInformationForClass(class);
+	} else {
+		PrintAllClassesAndMethods();
+	}
 }
 
 - (void)performExitCommand:(NSArray *)arguments
