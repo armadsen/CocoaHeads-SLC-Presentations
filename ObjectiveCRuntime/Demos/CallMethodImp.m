@@ -82,6 +82,7 @@ int main(int argc, const char * argv[])
 		sleep(person, @selector(sleepFrom:until:), [NSDate distantPast], [NSDate distantFuture]);
 		
 		NSColor *favoriteColor = objc_msgSend(person, @selector(favoriteColor));
+		
 		NSLog(@"favorite color: %@", favoriteColor);
 		
 		objc_msgSend(person, @selector(eat:), @"vegetables");

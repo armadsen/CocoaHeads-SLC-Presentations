@@ -129,7 +129,7 @@ void PrintAllClassesAndMethods(void);
 	NSString *method1Name = arguments[0];
 	NSString *method2Name = arguments[1];
 	NSString *className = arguments[2];
-
+	
 	Class class = objc_getClass([className UTF8String]);
 	if (!class) {
 		printf("Class %s doesn't exist. Create it with the subclass command first.\n", [className UTF8String]);
@@ -217,6 +217,10 @@ void PrintAllClassesAndMethods(void);
 	Class superclass = NSClassFromString(superClassName);
 	if (!superclass) superclass = [NSObject class];
 	Class subclass = objc_allocateClassPair(superclass, [subclassName UTF8String], 0);
+	
+	// Add methods
+	// Add ivars
+	
 	objc_registerClassPair(subclass);
 	
 	printf("Created class:\n");

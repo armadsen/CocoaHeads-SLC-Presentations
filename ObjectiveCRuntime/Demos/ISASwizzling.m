@@ -130,14 +130,14 @@
 int main(int argc, const char * argv[])
 {
 	@autoreleasepool {
-		ORSCreature *creature = [[ORSAmoeba alloc] init]; // This is th only assignment of creature!
+		ORSCreature *creature = [[ORSAmoeba alloc] init]; // This is the only assignment of creature!
 		NSLog(@"Starting with %p, which is a %@.", creature, [[creature class] species]);
 		
 		while ([creature evolve]) {
 			NSLog(@"Creature %p evolved into a %@!", creature, [[creature class] species]);
 		}
 		
-		[creature release];
+		//[creature release];
 	}
 }
 
