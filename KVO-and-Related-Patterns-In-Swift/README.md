@@ -1,0 +1,1 @@
+Code and slides for a talk on Key Value Observing (KVO) along related techniques in Swift. SLC CocoaHeads, November 3, 2015.
