@@ -104,3 +104,4 @@ Three options:
 - [KVO in Swift with Cocoa and Objective-C book](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/AdoptingCocoaDesignPatterns.html#//apple_ref/doc/uid/TP40014216-CH7-ID12)
 - [Observable-Swift](https://github.com/slazyk/Observable-Swift)
 - Scott Logic: [Exploring KVO alternatives with Swift](http://blog.scottlogic.com/2015/02/11/swift-kvo-alternatives.html)
+- [Intro to Arduino](https://github.com/armadsen/IntroToArduino/) (source for some demos)
