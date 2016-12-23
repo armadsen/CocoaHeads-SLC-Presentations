@@ -42,7 +42,7 @@ Unlike Cocoa Bindings, KVO is available on iOS.
 
 - Must ensure that you remove observer before either object is deallocated.
 - Subclasses can easily break KVO for their superclasses.
-- API is stringly-typed
+- API is stringly-typed (fixed in Swift 3)
 - Relies on ObjC runtime features. Will not work for non-@objc Swift objects.
 
 ---
