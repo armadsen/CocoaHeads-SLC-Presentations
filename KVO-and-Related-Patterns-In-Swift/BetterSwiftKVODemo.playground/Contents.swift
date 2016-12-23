@@ -2,7 +2,7 @@ import Foundation
 
 class Observe : NSObject {
 	
-	init(_ objectToObserve: NSObject, keyPath: String, observationBlock: AnyObject? -> Void) {
+	init(_ objectToObserve: NSObject, keyPath: String, observationBlock: @escaping (AnyObject?) -> Void) {
 		self.objectToObserve = objectToObserve
 		self.keyPath = keyPath
 		self.observationBlock = observationBlock
@@ -16,24 +16,27 @@ class Observe : NSObject {
 		self.objectToObserve.removeObserver(self, forKeyPath: self.keyPath, context: &KVOContext)
 	}
 	
-	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-		guard let keyPath = keyPath, object = object else { return }
+	override func observeValue(forKeyPath keyPath: String?,
+	                           of object: Any?,
+	                           change: [NSKeyValueChangeKey : Any]?,
+	                           context: UnsafeMutableRawPointer?) {
+		guard let keyPath = keyPath, let object = object else { return }
 		
 		// Make sure the notification is intended for us, and not a superclass
 		if context != &KVOContext {
-			super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+			super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
 			return
 		}
 		
-		let newValue = object.valueForKeyPath(keyPath)
-		self.observationBlock(newValue)
+		let newValue = (object as AnyObject).value(forKeyPath: keyPath)
+		self.observationBlock(newValue as AnyObject?)
 	}
 	
 	let objectToObserve: NSObject
 	let keyPath: String
-	let observationBlock: AnyObject? -> Void
+	let observationBlock: (AnyObject?) -> Void
 	
-	private var KVOContext = 1
+	fileprivate var KVOContext = 1
 }
 
 //: To make your objects observable, inherit from an ObjC class, and mark observable properties `dynamic`:

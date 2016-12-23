@@ -2,9 +2,14 @@ import Foundation
 
 struct PropertyObserver<T> {
 	private weak var target: AnyObject?
-	private let handler: T -> Void
+	private let handler: (T) -> Void
+	
+	init(target: AnyObject, handler: @escaping (T) -> Void) {
+		self.target = target
+		self.handler = handler
+	}
 
-	func invoke(newValue: T) {
+	func invoke(_ newValue: T) {
 		if target != nil { self.handler(newValue) }
 	}
 }
@@ -17,7 +22,7 @@ class PropertyNotification<PropertyType> {
 		self.observers.forEach {$0.invoke(newValue)}
 	}
 	
-	func addObserver(observer: AnyObject, handler: PropertyType -> Void) {
+	func add(observer: AnyObject, handler: @escaping (PropertyType) -> Void) {
 		observers.append(PropertyObserver(target: observer, handler: handler))
 	}
 }
@@ -30,12 +35,12 @@ class Observable<T> {
 	
 	var value: T {
 		didSet {
-			changeNotification.post(value)
+			changeNotification.post(newValue: value)
 		}
 	}
 	
-	func addObserver(observer: AnyObject, handler: T -> Void) {
-		self.changeNotification.addObserver(observer, handler: handler)
+	func addObserver(_ observer: AnyObject, handler: @escaping (T) -> Void) {
+		self.changeNotification.add(observer: observer, handler: handler)
 	}
 	
 	private let changeNotification = PropertyNotification<T>()

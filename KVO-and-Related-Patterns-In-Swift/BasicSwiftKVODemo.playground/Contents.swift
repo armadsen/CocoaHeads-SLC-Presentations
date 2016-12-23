@@ -24,16 +24,16 @@ class Observer : NSObject {
 		foo.removeObserver(self, forKeyPath: "bar")
 	}
 	
-	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-		guard let keyPath = keyPath, object = object else { return }
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+		guard let keyPath = keyPath, let object = object else { return }
 		
 		// Make sure the notification is intended for us, and not a superclass
 		if context != &ObserverKVOContext {
-			super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+			super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
 			return
 		}
 		
-		print("\(object)'s \(keyPath) changed to \(object.valueForKeyPath(keyPath)!)")
+		print("\(object)'s \(keyPath) changed to \((object as AnyObject).value(forKeyPath: keyPath)!)")
 	}
 }
 

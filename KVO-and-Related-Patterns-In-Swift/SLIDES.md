@@ -1,8 +1,10 @@
 
 # KVO and Related Techniques in Swift  
+<!-- 
 ### Andrew Madsen
 ### @armadsen
 ### SLC CocoaHeads, November 3, 2015  
+ -->
 
 ---
 
@@ -67,7 +69,7 @@ class Foo : NSObject {
 
 ---
 
-#KVO in Swift 2: The Bad Parts
+#KVO in Swift 3: The Bad Parts
 
 - Only for ObjC-compatible classes. Can't observe structs, enums, generic classes, etc. 
 - Managing registration/deregistration is harder than in ObjC.
